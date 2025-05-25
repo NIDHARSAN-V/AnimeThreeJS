@@ -1,0 +1,239 @@
+/* Carousel3D.module.css */
+
+
+body {
+  font-family: sans-serif;
+  background: #000000;
+  color: #fafafa;
+  overflow: hidden;
+}
+
+.banner {
+  width: 100%;
+  height: 100vh;
+  margin-top: 80px;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.slider {
+  position: absolute;
+  width: 200px;
+  height: 250px;
+  top: 10%;
+  left: calc(50% - 100px);
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+  animation: autorun 13s linear infinite;
+}
+
+@keyframes autorun {
+  from {
+    transform: perspective(1000px) rotateX(-10deg) rotateY(0deg);
+  }
+  to {
+    transform: perspective(1000px) rotateX(-10deg) rotateY(360deg);
+  }
+}
+
+.slider:hover {
+  animation-play-state: paused;
+}
+
+.item {
+  position: absolute;
+  inset: 0;
+
+  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(550px);
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+}
+
+.card:hover {
+  transform: rotateX(180deg);
+}
+
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.back {
+  transform: rotateX(180deg);
+  background: #111;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.back .img {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.back .img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+  filter: grayscale(40%);
+}
+
+.back .text {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  z-index: 1;
+}
+
+.content {
+  position: absolute;
+  
+  width: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: max-content;
+  width: min(1400px, 100vw);
+  padding-bottom: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+
+
+import React from "react";
+import styles from "./Carousel3D.module.css";
+
+const cards = [
+  {
+    title: "Dragon 1",
+    img: "images/dragon_1.jpg",
+    description: "This dragon breathes fire and flies through the clouds.",
+  },
+  {
+    title: "Dragon 2",
+    img: "images/dragon_2.jpg",
+    description: "Swift and fierce, known for its icy powers.",
+  },
+  {
+    title: "Dragon 3",
+    img: "images/dragon_3.jpg",
+    description: "A mysterious guardian of ancient treasures.",
+  },
+  {
+    title: "Dragon 4",
+    img: "images/dragon_4.jpg",
+    description: "Lives in volcanoes, controls molten lava.",
+  },
+  {
+    title: "Dragon 5",
+    img: "images/dragon_5.jpg",
+    description: "Stealthy and silent, master of shadows.",
+  },
+  {
+    title: "Dragon 6",
+    img: "images/dragon_6.jpg",
+    description: "Controls the winds, soars higher than any bird.",
+  },
+  {
+    title: "Dragon 7",
+    img: "images/dragon_7.jpg",
+    description: "Glows in the dark, a symbol of hope.",
+  },
+  {
+    title: "Dragon 8",
+    img: "images/dragon_8.jpg",
+    description: "Protector of the mountain temple.",
+  },
+  {
+    title: "Dragon 9",
+    img: "images/dragon_9.jpg",
+    description: "Legend says it can speak ancient languages.",
+  },
+  {
+    title: "Dragon 10",
+    img: "images/dragon_10.jpg",
+    description: "The ultimate mythical dragon with cosmic power.",
+  },
+];
+
+const Carousel3D = () => {
+  return (
+    <div className={styles.banner}>
+       //add the model here 
+      <div
+        className={styles.slider}
+        style={{ "--quantity": cards.length }}
+      >
+
+        
+        {cards.map((card, index) => (
+          <div
+            key={index}
+            className={styles.item}
+            style={{ "--position": index + 1 }}
+          >
+            <div className={styles.card}>
+              <div className={styles.front}>
+                <img src={card.img} alt={card.title} />
+              </div>
+              <div className={styles.back}>
+                <div className={styles.img}>
+                  <img src={card.img} alt={card.title} />
+                </div>
+                <div className={styles.text}>
+                  <h1>{card.title}</h1>
+                  <p>{card.description}</p>
+                </div>
+              </div>
+            </div>
+            {/* <img src="/images/sword.png" alt="hello" /> */}
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.content}>
+        <h1>My Model & Animation Collections</h1>
+        <div className="Author">
+          <h3>@ designed by VIPER_RKO</h3>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Carousel3D;
+
+
+
+

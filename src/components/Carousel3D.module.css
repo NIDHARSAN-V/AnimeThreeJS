@@ -1,0 +1,371 @@
+body {
+  font-family: sans-serif;
+  background: #000000;
+  color: #fafafa;
+  overflow: hidden;
+}
+
+.banner {
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  perspective: 1000px;
+  perspective-origin: center center;
+}
+
+.slider {
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  top: 45%;
+  left: 50%;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateX(-12deg);
+  animation: autorun 13s linear infinite;
+  z-index: 1;
+}
+
+@keyframes autorun {
+  from {
+    transform: translate(-50%, -50%) rotateX(-12deg) rotateY(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotateX(-12deg) rotateY(360deg);
+  }
+}
+
+.slider:hover {
+  animation-play-state: paused;
+}
+
+.item {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(550px);
+}
+
+/* Changed from circle patches to quarter arc borders */
+/* Common styles */
+.item::before,
+.item::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: screen;
+  filter: blur(5px);
+  animation: fireFlicker var(--flicker-speed, 1.5s) infinite ease-in-out alternate;
+
+  /* Use borders for quarter arcs */
+  width: 0;
+  height: 0;
+  background: transparent;
+  border-style: solid;
+  box-shadow:
+    0 0 15px rgba(255,0,0,0.6),
+    0 0 30px rgba(255,69,0,0.4),
+    0 0 45px rgba(255,165,0,0.3);
+}
+
+/* Top-left corner patch: half top and half left border */
+.item::before {
+  top: 0;
+  left: 0;
+  border-width: 40px 40px 0 0; /* top and left borders */
+  border-color: rgba(255,165,0,0.7) rgba(255,69,0,0.7) transparent transparent;
+  transform: rotate(-15deg) scale(1);
+  --flicker-speed: 1.8s;
+}
+
+/* Bottom-right corner patch: half bottom and half right border */
+.item::after {
+  bottom: 0;
+  right: 0;
+  border-width: 0 0 40px 40px; /* bottom and right borders */
+  border-color: transparent transparent rgba(255,165,0,0.7) rgba(255,69,0,0.7);
+  transform: rotate(20deg) scale(0.8);
+  --flicker-speed: 1.3s;
+}
+
+/* Additional random fire patches - keep as circles */
+.item .fire-patch {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: screen;
+  filter: blur(5px);
+  animation: fireFlicker var(--flicker-speed, 1.5s) infinite ease-in-out alternate;
+
+  background: 
+    radial-gradient(
+      circle,
+      rgba(0,0,0,1) 0%,      /* fully black center */
+      rgba(0,0,0,1) 25%,     /* keep black solid for 25% radius */
+      rgba(0,0,0,0.8) 26%,   /* start of dark shadow */
+      rgba(255,0,0,0.7) 50%,
+      rgba(255,69,0,0.6) 70%,
+      rgba(255,165,0,0.4) 85%,
+      rgba(255,255,0,0.2) 100%
+    );
+
+  box-shadow: 
+    0 0 15px rgba(255,0,0,0.6),
+    0 0 30px rgba(255,69,0,0.4),
+    0 0 45px rgba(255,165,0,0.3);
+}
+
+.item .fire-patch:nth-child(1) {
+  width: 60px;
+  height: 60px;
+  top: 0%;
+  left: 10%;
+  --flicker-speed: 1.6s;
+  animation-delay: 0.3s;
+}
+
+.item .fire-patch:nth-child(2) {
+  width: 40px;
+  height: 40px;
+  top: 20%;
+  right: 10%;
+  --flicker-speed: 0.5s;
+  animation-delay: 0.1s;
+}
+
+.item .fire-patch:nth-child(3) {
+  width: 50px;
+  height: 50px;
+  bottom: 30%;
+  left: 30%;
+  --flicker-speed: 1.4s;
+  animation-delay: 0.7s;
+}
+
+@keyframes fireFlicker {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1) rotate(var(--rotation, 0deg));
+    filter: blur(5px) brightness(1.1);
+  }
+  20% {
+    opacity: 0.95;
+    transform: scale(1.05) rotate(calc(var(--rotation, 0deg) + 2deg));
+    filter: blur(6px) brightness(1.3);
+  }
+  40% {
+    opacity: 0.85;
+    transform: scale(0.98) rotate(calc(var(--rotation, 0deg) - 1deg));
+    filter: blur(4px) brightness(1);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1) rotate(calc(var(--rotation, 0deg) + 3deg));
+    filter: blur(7px) brightness(1.4);
+  }
+  80% {
+    opacity: 0.92;
+    transform: scale(1.03) rotate(calc(var(--rotation, 0deg) - 2deg));
+    filter: blur(5px) brightness(1.2);
+  }
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+}
+
+.card:hover {
+  transform: rotateX(180deg);
+}
+
+@keyframes fireGlow {
+  0% {
+    box-shadow: 
+      0 0 20px 5px rgba(255, 0, 0, 0.9),
+      0 0 40px 10px rgba(255, 69, 0, 0.8),
+      0 0 60px 15px rgba(255, 165, 0, 0.6);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px 10px rgba(255, 69, 0, 0.9),
+      0 0 60px 15px rgba(255, 100, 0, 0.8),
+      0 0 80px 20px rgba(255, 200, 0, 0.6);
+  }
+  100% {
+    box-shadow: 
+      0 0 20px 5px rgba(255, 0, 0, 0.9),
+      0 0 40px 10px rgba(255, 69, 0, 0.8),
+      0 0 60px 15px rgba(255, 165, 0, 0.6);
+  }
+}
+
+.fire .card {
+  animation: fireGlow 1.5s infinite;
+  border: 2px solid rgba(255, 69, 0, 0.7);
+  border-radius: 10px;
+}
+
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.back {
+  transform: rotateX(180deg);
+  background: #111;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.back .img {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.back .img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+  filter: grayscale(40%) sepia(50%) hue-rotate(-10deg);
+}
+
+.back .text {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  z-index: 1;
+}
+
+.content {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: max-content;
+  width: min(1400px, 100vw);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.models {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.model, .model1 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.model {
+  z-index: 0;
+}
+
+.model1 {
+  z-index: 100;
+}
+
+/* Embers effect */
+.item .ember {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,0,0.8) 0%, rgba(255,100,0,0.8) 50%, transparent 100%);
+  filter: blur(1px);
+  animation: emberFloat linear infinite;
+  z-index: 4;
+}
+
+@keyframes emberFloat {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* Create random embers */
+.item .ember:nth-child(1) {
+  top: 10%;
+  left: 15%;
+  animation-duration: 3s;
+  animation-delay: 0s;
+}
+.item .ember:nth-child(2) {
+  top: 20%;
+  left: 80%;
+  animation-duration: 4s;
+  animation-delay: 0.5s;
+}
+.item .ember:nth-child(3) {
+  top: 70%;
+  left: 30%;
+  animation-duration: 3.5s;
+  animation-delay: 1s;
+}
+.item .ember:nth-child(4) {
+  top: 60%;
+  left: 70%;
+  animation-duration: 4.5s;
+  animation-delay: 1.5s;
+}
+
+
+
+.Blazing {
+    color: rgb(255, 115, 0);
+    font-family: elephant;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow:
+        0 3px 20px red,
+        0 0 20px rgb(4, 4, 4),
+        0 0 10px rgb(255, 0, 0),
+        4px -5px 6px rgb(255, 157, 0),
+        -4px -10px 10px yellow,
+        0 -10px 30px yellow;
+    animation: 2s Blazing infinite alternate linear;
+
+    position: static; /* remove absolute positioning */
+    width: auto;
+}
+
+
