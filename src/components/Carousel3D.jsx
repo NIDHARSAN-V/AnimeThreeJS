@@ -62,18 +62,22 @@ const Carousel3D = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const [roar, setRoar] = useState(false)
-  const handleRoar = (index) => {
-    setRoar(true);
-    setActiveIndex(index);
+const handleRoar = (index) => {
+  setRoar(true);
+  setActiveIndex(index);
 
-    setTimeout(() => {
-      setRoar(false);
-      setActiveIndex(null); // Remove the fire border after 5 seconds
-    }, 5000);
+  // Play the audio
+  const audio = new Audio("dragonroar.mp3");
+  audio.play();
 
+  setTimeout(() => {
+    setRoar(false);
+    setActiveIndex(null); // Remove the fire border after 5 seconds
+  }, 5000);
 
-    //navigate 
-  };
+  // navigate (if needed)
+};
+
   return (
 
 
