@@ -4,10 +4,11 @@
   --box-size: 33px;
   --box-border-radius: 15%;
 }
-.body{
-    background-color: black;
+body{
     display: grid;
     place-content: center;
+    background-color: black;
+    
 }
 
 .container {

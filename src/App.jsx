@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect, useRef } from "react";
 import './App.css';
 import AnimatedBoxes from "./components/Loader"; // loader component
 
@@ -6,7 +6,7 @@ const Carousel3D = React.lazy(() => import("./components/Carousel3D"));
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
-  const [audioPlayed, setAudioPlayed] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 5000); // simulate load
@@ -14,22 +14,27 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (loaded && !audioPlayed) {
-      const audio = new Audio("primal.mp3");
-      audio.play().then(() => {
-        setAudioPlayed(true);
-      }).catch(err => {
-        console.warn("Autoplay prevented:", err);
-        // Optional: Wait for user interaction to play manually
-        const handler = () => {
-          audio.play();
-          setAudioPlayed(true);
-          window.removeEventListener("click", handler);
-        };
-        window.addEventListener("click", handler);
-      });
+    if (loaded) {
+      // Create new Audio instance only once
+      if (!audioRef.current) {
+        audioRef.current = new Audio("primal.mp3");
+      }
+
+      audioRef.current.play()
+        .then(() => {
+          console.log("Audio played automatically");
+        })
+        .catch(err => {
+          console.warn("Autoplay prevented:", err);
+
+          const handler = () => {
+            audioRef.current.play();
+            window.removeEventListener("click", handler);
+          };
+          window.addEventListener("click", handler);
+        });
     }
-  }, [loaded, audioPlayed]);
+  }, [loaded]);
 
   if (!loaded) {
     return <AnimatedBoxes />;
