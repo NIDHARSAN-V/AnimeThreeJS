@@ -11,9 +11,12 @@ const Model = ({ roar }) => {
   if (!actions) return;
 
   if (roar) {
-    const anim = Object.values(actions)[3]; // Animation index 3
+    let anim = Object.values(actions)[3]; // Animation index 3
     if (anim) {
       anim.reset().fadeIn(0.5).play();
+      anim = Object.values(actions)[1];
+      anim.reset().fadeIn(0.5).play();
+      
     }
 
     // Optional stop or transition

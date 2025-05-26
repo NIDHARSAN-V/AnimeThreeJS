@@ -23,7 +23,7 @@ body {
   left: 50%;
   transform-style: preserve-3d;
   transform: translate(-50%, -50%) rotateX(-12deg);
-  animation: autorun 13s linear infinite;
+  animation: autorun var(--animation-duration, 13s) linear infinite;
   z-index: 1;
 }
 
@@ -367,5 +367,6 @@ body {
     position: static; /* remove absolute positioning */
     width: auto;
 }
+
 
 

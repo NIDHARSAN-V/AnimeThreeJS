@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Carousel3D.module.css";
 import PrimalModel from "./PrimalModel";
 import GPrimalModel from "./Gprimal";
 import Typewriter from 'typewriter-effect';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const cards = [
   {
@@ -60,43 +64,78 @@ const cards = [
 const Carousel3D = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+  const [roar, setRoar] = useState(false);
+  const [rotationZ, setRotationZ] = useState(0);
+   const [animationSpeed, setAnimationSpeed] = useState(13); 
 
-  const [roar, setRoar] = useState(false)
-const handleRoar = (index) => {
+  const handleRoar = (index) => {
   setRoar(true);
   setActiveIndex(index);
+    const slider = document.querySelector(`.${styles.slider}`);
 
-  // Play the audio
+    console.log(slider.style , "Slider")
+
   const audio = new Audio("dragonroar.mp3");
   audio.play();
+  setIsHovering(true);
+  setAnimationSpeed(0.5)
 
   setTimeout(() => {
+    setIsHovering(false);
     setRoar(false);
-    setActiveIndex(null); // Remove the fire border after 5 seconds
-  }, 5000);
+    setActiveIndex(null);
+    setAnimationSpeed(13)
+    console.log(index, "index");
+}, 8000);
 
-  // navigate (if needed)
+
+  //navigate
 };
 
+  useEffect(() => {
+    let proxy = { rot: 0 };
+
+    gsap.to(proxy, {
+      rot: Math.PI * 2,
+      ease: "none",
+      scrollTrigger: {
+        trigger: document.body,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+        onUpdate: () => setRotationZ(proxy.rot),
+      },
+    });
+
+    return () => {
+      ScrollTrigger.killAll();
+    };
+  }, []);
+
   return (
-
-
     <div className={styles.banner}>
-
-
-
-      {isHovering ? <div className={styles.model}>
-        <GPrimalModel roar={roar} />
-      </div> : <div className={styles.model}>
-        <PrimalModel paused={isHovering} />
-      </div>}
-
-      <div
+      {isHovering ? (
+        <div className={styles.model}>
+          <GPrimalModel roar={roar} />
+        </div>
+      ) : (
+        <div className={styles.model}>
+          <PrimalModel paused={isHovering} rotationZ={rotationZ} />
+        </div>
+      )}
+  <div
         className={styles.slider}
-        style={{ "--quantity": cards.length }}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+       style={{
+  "--quantity": cards.length,
+  "--animation-duration": `${animationSpeed}s`, // ✅ inject this variable
+}}
 
+        onMouseEnter={() => {
+          if (!roar) setIsHovering(true);
+        }}
+        onMouseLeave={() => {
+          if (!roar) setIsHovering(false);
+        }}
       >
         {cards.map((card, index) => (
           <div
@@ -105,7 +144,6 @@ const handleRoar = (index) => {
             style={{ "--position": index + 1 }}
             onClick={() => handleRoar(index)}
           >
-
             <div className={styles.card}>
               <div className={styles.front}>
                 <img src={card.img} alt={card.title} />
@@ -125,30 +163,19 @@ const handleRoar = (index) => {
       </div>
 
       <div className={styles.content}>
-
-
         <p className={styles.Blazing}>
-          @Designed by{' '}
+          @Designed by{" "}
           <span className={styles.Blazing}>
             <Typewriter
               options={{
-                strings: ['VIPER_RKO'],
+                strings: ["VIPER_RKO"],
                 autoStart: true,
                 loop: true,
               }}
             />
           </span>
         </p>
-
-
-
-
-
       </div>
-
-
-
-
     </div>
   );
 };
